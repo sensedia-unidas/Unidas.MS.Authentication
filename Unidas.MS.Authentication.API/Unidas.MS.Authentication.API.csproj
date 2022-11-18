@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>432f0b2f-072e-42f0-8cc0-714c61505e88</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.17.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Unidas.MS.Authentication.Application\Unidas.MS.Authentication.Application.csproj" />
+    <ProjectReference Include="..\Unidas.MS.Authentication.Domain\Unidas.MS.Authentication.Domain.csproj" />
+    <ProjectReference Include="..\Unidas.MS.Authentication.Infra.IoC\Unidas.MS.Authentication.Infra.IoC.csproj" />
+  </ItemGroup>
+
+</Project>
