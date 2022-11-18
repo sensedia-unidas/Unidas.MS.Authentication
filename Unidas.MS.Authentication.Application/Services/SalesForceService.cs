@@ -59,7 +59,7 @@ namespace Unidas.MS.Authentication.Application.Services
             }
             else
             {
-                return new RetornoToken() { Token = _memoryCache.Get(SalesForceCache).ToString() } ;
+                return new RetornoToken() { Token = _memoryCache.Get(SalesForceCache).ToString(), Status = HttpStatusCode.OK } ;
             }
         }
 
@@ -79,24 +79,39 @@ namespace Unidas.MS.Authentication.Application.Services
                     new KeyValuePair<string, string>("grant_type", "password")
                 });
 
-            var response = await client.PostAsync(_appSettings.SalesForce.Url + "oauth2/token", content);
+            var response = await client.PostAsync(_appSettings.SalesForce.Url, content);
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 var token = JsonConvert.DeserializeObject<Token>(await response.Content.ReadAsStringAsync());
 
-                return new RetornoToken() { Token = token.AccessToken};
+                if (token != null)
+                {
+                    SalvaTokenCache(token.AccessToken);
+
+                    return new RetornoToken() { Token = token.AccessToken, Status = HttpStatusCode.OK };
+                }
+
             }
-            else 
+            else if (response.StatusCode == HttpStatusCode.BadRequest)
             {
-                return new RetornoToken() ;
+                return new RetornoToken() { Status = HttpStatusCode.BadRequest };
+            }
+            else if (response.StatusCode == HttpStatusCode.NotFound) 
+            {
+                return new RetornoToken() { Status = HttpStatusCode.NotFound };
+            }
+            else if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                return new RetornoToken() { Status = HttpStatusCode.Unauthorized } ;
             }
 
+            return new RetornoToken();
         }
 
         private void SalvaTokenCache(string token) 
         {
-            var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(1));
+            var cacheEntryOptions = new MemoryCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(118));
 
             _memoryCache.Set(SalesForceCache, token, cacheEntryOptions);
         }

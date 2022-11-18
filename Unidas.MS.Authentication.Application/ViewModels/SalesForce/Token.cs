@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,23 +10,22 @@ namespace Unidas.MS.Authentication.Application.ViewModels.SalesForce
 {
     public class Token
     {
-        
-        [JsonPropertyName("access_token")]
-        public string AccessToken { get; set; }
+        [JsonProperty("access_token")]
+        public string AccessToken;
 
-        [JsonPropertyName("instance_url")]
-        public string InstanceUrl { get; set; }
+        [JsonProperty("instance_url")]
+        public string InstanceUrl;
 
-        [JsonPropertyName("id")]
-        public string Id { get; set; }
+        [JsonProperty("id")]
+        public string Id;
 
-        [JsonPropertyName("token_type")]
-        public string TokenType { get; set; }
+        [JsonProperty("token_type")]
+        public string TokenType;
 
-        [JsonPropertyName("issue_at")]
-        public string IssueAt { get; set; }
+        [JsonProperty("issued_at")]
+        public string IssuedAt;
 
-        [JsonPropertyName("signature")]
-        public string Signature { get; set; }
+        [JsonProperty("signature")]
+        public string Signature;
     }
 }

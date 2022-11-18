@@ -81,14 +81,32 @@ app.UseHttpsRedirection();
 // GET /GetMessage
 
 
-
 app.MapPost("/SalesForce/Authenticate", async (CredentialsViewModel request, ISalesForceService service) =>
 {
     app.Logger.LogInformation($"Token solicitado", request);
 
     var response = await service.Authorize(request);
 
-    return response;
+    switch (response.Status)
+    {
+        case HttpStatusCode.OK:
+            return Results.Ok(response);
+
+        case HttpStatusCode.BadRequest:
+            return Results.BadRequest(response);
+
+        case HttpStatusCode.Unauthorized:
+            return Results.Unauthorized();
+
+        case HttpStatusCode.NotFound:
+            return Results.NotFound();
+
+        default:
+            return Results.Ok();
+    }
+
+    
+    //return response;
 
 });
 
@@ -98,7 +116,3 @@ app.MapPost("/SalesForce/Authenticate", async (CredentialsViewModel request, ISa
 
 app.Run();
 
-internal record WeatherForecast(DateTime Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
