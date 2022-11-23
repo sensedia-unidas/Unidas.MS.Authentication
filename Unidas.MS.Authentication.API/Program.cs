@@ -16,6 +16,7 @@ using Microsoft.OpenApi.Models;
 using Unidas.MS.Authentication.Application.ViewModels.Request;
 using Unidas.MS.Authentication.Application.Interfaces.Services;
 using Unidas.MS.Authentication.Application.ViewModels;
+using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -108,11 +109,15 @@ app.MapPost("/SalesForce/Authenticate", async (CredentialsViewModel request, ISa
     
     //return response;
 
-});
+})
+    .Produces<CredentialsViewModel>()
+    .ProducesProblem(HttpStatusCode.Unauthorized.GetHashCode())
+    .ProducesProblem(HttpStatusCode.NotFound.GetHashCode());
 
 
 #endregion
 
 
 app.Run();
+
 
