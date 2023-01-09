@@ -25,13 +25,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 
 #region Configuracoes adicionadas - builder.services
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("V1", new OpenApiInfo() { Title = "API V1", Version = "V1.0" });
-    //options.SwaggerDoc("V2", new OpenApiInfo() { Title = "API V2", Version = "V2.0" });
-    options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
-    options.CustomSchemaIds(x => x.FullName);
-});
+builder.Services.AddSwaggerGen();
 
 NativeInjector.RegisterServices(builder.Services);
 
@@ -62,11 +56,7 @@ app.UseMiddleware(typeof(ApiExceptionMiddleware));
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(options =>
-    {
-        options.SwaggerEndpoint($"/swagger/V1/swagger.json", "V1.0");
-        //options.SwaggerEndpoint($"/swagger/V2/swagger.json", "V2.0");
-    });
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
@@ -88,6 +78,7 @@ app.MapPost("/SalesForce/Authenticate", async (CredentialsViewModel request, ISa
 
     var response = await service.Authorize(request);
 
+
     switch (response.Status)
     {
         case HttpStatusCode.OK:
@@ -103,7 +94,7 @@ app.MapPost("/SalesForce/Authenticate", async (CredentialsViewModel request, ISa
             return Results.NotFound();
 
         default:
-            return Results.Ok();
+            return Results.BadRequest("");
     }
 
     
